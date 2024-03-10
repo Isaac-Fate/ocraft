@@ -11,6 +11,8 @@ ocraft = "ocraft:app"
 [tool.poetry.dependencies]
 python = "^3.11"
 typer = { extras = ["all"], version = "^0.9.0" }
+torchvision = "^0.17.1"
+opencv-python = "^4.9.0.80"
 
 
 [build-system]

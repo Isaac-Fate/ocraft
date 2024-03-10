@@ -1,3 +1,3 @@
 # OCRaft
 
-It reads *Oh! Craft*. This is package for OCR.
+It reads *Oh! Craft*. This is a package for OCR.
