@@ -13,9 +13,15 @@ class CRNN(nn.Module):
         in_channels: int,
         hidden_size: int,
         num_tokens: int,
+        image_tensor_height: int,
+        image_tensor_width: int,
     ):
 
         super().__init__()
+
+        self._num_tokens = num_tokens
+        self._image_tensor_height = image_tensor_height
+        self._image_tensor_width = image_tensor_width
 
         # Add CNN blocks
         self.cnn = nn.Sequential(
@@ -132,10 +138,29 @@ class CRNN(nn.Module):
                 bidirectional_lstm2=BidirectionalLSTM(
                     input_size=hidden_size,
                     hidden_size=hidden_size,
-                    output_size=num_tokens,
+                    # * +1 for the blank token
+                    output_size=num_tokens + 1,
                 ),
             )
         )
+
+    @property
+    def num_tokens(self) -> int:
+        """Total number of tokens excluding the blank token."""
+
+        return self._num_tokens
+
+    @property
+    def image_tensor_height(self) -> int:
+        """Height of the input image tensor."""
+
+        return self._image_tensor_height
+
+    @property
+    def image_tensor_width(self) -> int:
+        """Width of the input image tensor."""
+
+        return self._image_tensor_width
 
     def forward(self, image: Tensor) -> Tensor:
 
