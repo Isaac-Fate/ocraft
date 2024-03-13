@@ -24,10 +24,18 @@ class TrainingConfig(BaseModel):
     image_tensor_height: int
     image_tensor_width: int
 
-    # Training configurations
+    # Number of epochs to train
     epochs: int
-    adam_lr: float
+
+    # Learning rate of the optimizer
+    lr: float
+
+    # The parameter of the exponential learning rate scheduler
+    # The learning rate is multiplied by this parameter every epoch
     exponential_lr_gamma: float
+
+    # Maximum gradient norm
+    max_grad_norm: float
 
     # Save a checkpoint every n epochs
     # The checkpoint of the last epochs is always saved
@@ -51,16 +59,26 @@ class TrainingConfig(BaseModel):
         return self.run_dir.joinpath("train").with_suffix(".log")
 
     @property
-    def train_samples_file_path(self) -> list[str]:
+    def train_samples_file_path(self) -> Path:
         """Path of the training sample annotation CSV."""
 
-        return self.run_dir.joinpath("train-samples.csv")
+        file_path = self.run_dir.joinpath("train-samples.csv")
+
+        # Ensure that the file exists
+        assert file_path.is_file(), f"File {file_path} does not exist"
+
+        return file_path
 
     @property
-    def valid_samples_file_path(self) -> list[str]:
+    def valid_samples_file_path(self) -> Path:
         """Path of the validation sample annotation CSV."""
 
-        return self.run_dir.joinpath("valid-samples.csv")
+        file_path = self.run_dir.joinpath("valid-samples.csv")
+
+        # Ensure that the file exists
+        assert file_path.is_file(), f"File {file_path} does not exist"
+
+        return file_path
 
     @property
     def checkpoints_dir(self) -> Path:

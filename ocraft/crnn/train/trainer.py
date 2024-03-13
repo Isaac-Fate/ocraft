@@ -5,8 +5,9 @@ from pathlib import Path
 import torch
 from torch import Tensor
 from torch.utils.data import DataLoader
+from torch import nn
 from torch.nn import functional as F
-from torch.optim import Adam
+from torch.optim import RMSprop
 from torch.optim.lr_scheduler import ExponentialLR
 
 import wandb
@@ -103,9 +104,9 @@ class Trainer:
         self._prepare_data()
 
         # Optimizer
-        optimizer = Adam(
+        optimizer = RMSprop(
             self.model.parameters(),
-            lr=self._config.adam_lr,
+            lr=self._config.lr,
         )
 
         # Scheduler
@@ -146,6 +147,12 @@ class Trainer:
 
                 # Backward pass
                 loss.backward()
+
+                # Clip gradients
+                nn.utils.clip_grad_norm_(
+                    self.model.parameters(),
+                    self._config.max_grad_norm,
+                )
 
                 # Update weights
                 optimizer.step()
@@ -322,6 +329,8 @@ class Trainer:
                 targets=encoded_texts,
                 input_lengths=torch.full((batch_size,), seq_len).to(self.device),
                 target_lengths=text_lengths,
+                # * Zero the infinity loss and the associated gradients!
+                zero_infinity=True,
             ),
         )
 
