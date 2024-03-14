@@ -1,3 +1,4 @@
+from typing import Optional, Any
 from pathlib import Path
 from pydantic import BaseModel
 
@@ -12,7 +13,8 @@ class TrainingConfig(BaseModel):
     dataset_dir: Path
 
     # Path to the file consisting of all tokens
-    tokens_file_path: Path
+    # If this is None, the file path will be <run_dir>/tokens.txt
+    tokens_file_path: Optional[Path] = None
 
     # Batch sizes
     train_batch_size: int
@@ -91,3 +93,12 @@ class TrainingConfig(BaseModel):
             path.mkdir()
 
         return path
+
+    def model_post_init(self, __context: Any) -> None:
+
+        # Call method of super class
+        super().model_post_init(__context)
+
+        # Infer the path of the tokens file
+        if self.tokens_file_path is None:
+            self.tokens_file_path = self.run_dir.joinpath("tokens.txt")
