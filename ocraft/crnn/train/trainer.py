@@ -317,9 +317,6 @@ class Trainer:
         # Get sequence length and batch size
         seq_len, batch_size, _ = output.shape
 
-        # Shape: (batch_size, seq_len, num_tokens)
-        output = torch.permute(output, (1, 0, 2))
-
         # Compute the log-probabilities
         log_probs = F.log_softmax(output, dim=-1)
 
