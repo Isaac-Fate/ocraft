@@ -6,6 +6,7 @@ from .dataset import (
 )
 from .image_converter import ImageConverter
 from .text_converter import TextConverter
+from .image_synthesizer import ImageSynthesizer
 
 
 __all__ = [
@@ -15,4 +16,5 @@ __all__ = [
     "Synth90kRawSample",
     "ImageConverter",
     "TextConverter",
+    "ImageSynthesizer",
 ]
