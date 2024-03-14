@@ -60,6 +60,9 @@ def split(
     with open(annotation_file_path, "r") as f:
         rows = f.readlines()
 
+        # Skip header
+        rows = rows[1:]
+
     # Import NumPy
     import numpy as np
 
