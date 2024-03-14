@@ -24,7 +24,7 @@ class BatchTrainingLogRecord(BaseModel):
             "Training Loss: {train_loss}"
         ).format(
             epoch=self.epoch,
-            batch=self.batch_number,
+            batch_number=self.batch_number,
             num_batches=self.num_batches,
             train_loss=self.train_loss,
         )
