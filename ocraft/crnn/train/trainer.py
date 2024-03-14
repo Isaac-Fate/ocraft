@@ -135,6 +135,9 @@ class Trainer:
             batch: Synth90kSample
             for i, batch in enumerate(self._train_data_loader):
 
+                # Turn on training mode
+                self.model.train()
+
                 # Batch number
                 batch_number = i + 1
 
