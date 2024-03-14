@@ -206,7 +206,8 @@ class Trainer:
 
         # Read all tokens
         with open(self._config.tokens_file_path, "r") as f:
-            tokens = f.readlines()
+            content = f.read()
+        tokens = content.split("\n")
 
         # Text converter
         self._text_converter = TextConverter(tokens)
