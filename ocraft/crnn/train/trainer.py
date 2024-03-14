@@ -50,7 +50,7 @@ class Trainer:
 
         # Text converter will be initialized later in `_prepare_data`
         # since we need to read the file of tokens
-        self._text_converter = Optional[TextConverter] = None
+        self._text_converter: Optional[TextConverter] = None
 
         # Model will be initialized later in `_prepare_data`
         self._model: Optional[CRNN] = None
