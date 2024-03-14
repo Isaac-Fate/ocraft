@@ -321,15 +321,13 @@ class Trainer:
         log_probs = F.log_softmax(output, dim=-1)
 
         # Compute loss
-        loss: Tensor = (
-            F.ctc_loss(
-                log_probs=log_probs,
-                targets=encoded_texts,
-                input_lengths=torch.full((batch_size,), seq_len).to(self.device),
-                target_lengths=text_lengths,
-                # * Zero the infinity loss and the associated gradients!
-                zero_infinity=True,
-            ),
+        loss: Tensor = F.ctc_loss(
+            log_probs=log_probs,
+            targets=encoded_texts,
+            input_lengths=torch.full((batch_size,), seq_len).to(self.device),
+            target_lengths=text_lengths,
+            # * Zero the infinity loss and the associated gradients!
+            zero_infinity=True,
         )
 
         return loss
