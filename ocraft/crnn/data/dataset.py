@@ -9,8 +9,8 @@ from .image_converter import ImageConverter
 from .text_converter import TextConverter
 
 
-Synth90kSampleMeta = namedtuple(
-    "Synth90kSampleMeta",
+SynthSampleMeta = namedtuple(
+    "SynthSampleMeta",
     (
         "image_file_path",
         "text",
@@ -18,8 +18,8 @@ Synth90kSampleMeta = namedtuple(
 )
 
 
-Synth90kSample = namedtuple(
-    "Synth90kSample",
+SynthSample = namedtuple(
+    "SynthSample",
     (
         "image",
         "encoded_text",
@@ -28,8 +28,8 @@ Synth90kSample = namedtuple(
 )
 
 
-Synth90kRawSample = namedtuple(
-    "Synth90kRawSample",
+SynthRawSample = namedtuple(
+    "SynthRawSample",
     (
         "image",
         "text",
@@ -37,7 +37,7 @@ Synth90kRawSample = namedtuple(
 )
 
 
-class Synth90kDataset(Dataset):
+class SynthDataset(Dataset):
 
     def __init__(
         self,
@@ -56,7 +56,7 @@ class Synth90kDataset(Dataset):
         self._text_converter = text_converter
 
         # Load annotations
-        self._sample_metas: list[Synth90kSampleMeta] = []
+        self._sample_metas: list[SynthSampleMeta] = []
         with open(self._annotation_file_path, "r") as f:
 
             # Create a CSV reader
@@ -68,7 +68,7 @@ class Synth90kDataset(Dataset):
             for row in reader:
                 # The image file path is relative to the synth90k dataset directory
                 # We do not load the absolute path here to increase performance
-                sample_meta = Synth90kSampleMeta(*row)
+                sample_meta = SynthSampleMeta(*row)
 
                 # Add sample annotation
                 self._sample_metas.append(sample_meta)
@@ -77,7 +77,7 @@ class Synth90kDataset(Dataset):
 
         return len(self._sample_metas)
 
-    def __getitem__(self, index: int) -> Synth90kSample:
+    def __getitem__(self, index: int) -> SynthSample:
 
         # Get sample annotation
         sample_meta = self._sample_metas[index]
@@ -97,24 +97,24 @@ class Synth90kDataset(Dataset):
         text_length = len(encoded_text)
         text_length = torch.LongTensor([text_length])
 
-        return Synth90kSample(
+        return SynthSample(
             image=image,
             encoded_text=encoded_text,
             text_length=text_length,
         )
 
     @staticmethod
-    def collate(samples: list[Synth90kSample]) -> Synth90kSample:
+    def collate(samples: list[SynthSample]) -> SynthSample:
         """Convert list of samples to a batch.
 
         Parameters
         ----------
-        samples : list[Synth90kSample]
+        samples : list[SynthSample]
             A list of samples.
 
         Returns
         -------
-        Synth90kSample
+        SynthSample
             A batch of samples.
             - image: A tensor of shape (N, 1, H, W).
             - encoded_text: A tensor of shape (L,) where L is the sum of all text lengths.
@@ -123,7 +123,7 @@ class Synth90kDataset(Dataset):
 
         # Convert list of samples to a batch, i.e,
         # convert row-oriented data to column-oriented data
-        batch = Synth90kSample(*(zip(*samples)))
+        batch = SynthSample(*(zip(*samples)))
 
         # Unpack batch
         images = batch.image
@@ -143,7 +143,7 @@ class Synth90kDataset(Dataset):
         text_lengths = torch.cat(text_lengths, dim=0)
 
         # Form a new batch
-        batch = Synth90kSample(
+        batch = SynthSample(
             image=images,
             encoded_text=encoded_texts,
             text_length=text_lengths,
@@ -151,7 +151,7 @@ class Synth90kDataset(Dataset):
 
         return batch
 
-    def get_raw_sample(self, index: int) -> Synth90kRawSample:
+    def get_raw_sample(self, index: int) -> SynthRawSample:
         """Get the unprocessed raw sample.
 
         Parameters
@@ -161,7 +161,7 @@ class Synth90kDataset(Dataset):
 
         Returns
         -------
-        Synth90kRawSample
+        SynthRawSample
             - image: A PIL Image object.
             - text: The text string in the image.
         """
@@ -173,7 +173,7 @@ class Synth90kDataset(Dataset):
         image_file_path = self._dataset_dir.joinpath(sample_meta.image_file_path)
         image = Image.open(image_file_path)
 
-        return Synth90kRawSample(
+        return SynthRawSample(
             image=image,
             text=sample_meta.text,
         )

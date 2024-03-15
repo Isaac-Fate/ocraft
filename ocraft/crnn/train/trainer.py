@@ -15,7 +15,7 @@ from loguru import logger
 
 from .config import TrainingConfig
 from .logging import BatchTrainingLogRecord, EpochTrainingLogRecord, ValidationLogRecord
-from ..data import Synth90kDataset, ImageConverter, TextConverter, Synth90kSample
+from ..data import SynthDataset, ImageConverter, TextConverter, SynthSample
 from ..models import CRNN
 
 
@@ -38,7 +38,7 @@ class Trainer:
         # Data
 
         # Datasets and loaders will be initialized later in `_prepare_data`
-        self._dataset: Optional[Synth90kDataset] = None
+        self._dataset: Optional[SynthDataset] = None
         self._train_data_loader: Optional[DataLoader] = None
         self._valid_data_loader: Optional[DataLoader] = None
 
@@ -132,7 +132,7 @@ class Trainer:
             # Total number of batches
             num_batches = len(self._train_data_loader)
 
-            batch: Synth90kSample
+            batch: SynthSample
             for i, batch in enumerate(self._train_data_loader):
 
                 # Turn on training mode
@@ -215,13 +215,13 @@ class Trainer:
         self._text_converter = TextConverter(tokens)
 
         # Load datasets
-        train_dataset = Synth90kDataset(
+        train_dataset = SynthDataset(
             self._config.dataset_dir,
             self._config.train_samples_file_path,
             image_converter=self._image_converter,
             text_converter=self._text_converter,
         )
-        valid_dataset = Synth90kDataset(
+        valid_dataset = SynthDataset(
             self._config.dataset_dir,
             self._config.valid_samples_file_path,
             image_converter=self._image_converter,
@@ -232,12 +232,12 @@ class Trainer:
         train_data_loader = DataLoader(
             train_dataset,
             batch_size=self._config.train_batch_size,
-            collate_fn=Synth90kDataset.collate,
+            collate_fn=SynthDataset.collate,
         )
         valid_data_loader = DataLoader(
             valid_dataset,
             batch_size=self._config.valid_batch_size,
-            collate_fn=Synth90kDataset.collate,
+            collate_fn=SynthDataset.collate,
         )
 
         self._train_data_loader = train_data_loader
@@ -264,7 +264,7 @@ class Trainer:
 
             # Validation loop
             num_batches = len(self._valid_data_loader)
-            batch: Synth90kSample
+            batch: SynthSample
             for batch in self._valid_data_loader:
 
                 # Pass the batch through the model and
@@ -292,12 +292,12 @@ class Trainer:
             if self._config.wandb:
                 wandb.log(valid_log_record.model_dump())
 
-    def _forward_batch(self, batch: Synth90kSample) -> Tensor:
+    def _forward_batch(self, batch: SynthSample) -> Tensor:
         """Pass the batch through the model and compute the loss.
 
         Parameters
         ----------
-        batch : Synth90kSample
+        batch : SynthSample
             A batch of samples. Each field is a data batch.
 
         Returns

@@ -1,8 +1,8 @@
 from .dataset import (
-    Synth90kDataset,
-    Synth90kSampleMeta,
-    Synth90kSample,
-    Synth90kRawSample,
+    SynthDataset,
+    SynthSampleMeta,
+    SynthSample,
+    SynthRawSample,
 )
 from .image_converter import ImageConverter
 from .text_converter import TextConverter
@@ -10,10 +10,10 @@ from .image_synthesizer import ImageSynthesizer
 
 
 __all__ = [
-    "Synth90kDataset",
-    "Synth90kSampleMeta",
-    "Synth90kSample",
-    "Synth90kRawSample",
+    "SynthDataset",
+    "SynthSampleMeta",
+    "SynthSample",
+    "SynthRawSample",
     "ImageConverter",
     "TextConverter",
     "ImageSynthesizer",

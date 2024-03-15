@@ -1,4 +1,5 @@
 import typer
+from rich.progress import track
 
 from .crnn import crnn_app
 

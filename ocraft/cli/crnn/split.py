@@ -84,10 +84,10 @@ def split(
 
     # Write to files
 
-    from ...crnn.data import Synth90kSampleMeta
+    from ...crnn.data import SynthSampleMeta
 
     # Get CSV header
-    header = Synth90kSampleMeta._fields
+    header = SynthSampleMeta._fields
 
     with open(run_dir.joinpath("train-samples.csv"), "w") as f:
         f.write(",".join(header) + "\n")

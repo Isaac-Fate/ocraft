@@ -56,12 +56,12 @@ class ImageSynthesizer:
         text: str,
         *,
         font_size: int = 10,
-        grayscale_value: Optional[float] = None,
+        grayscale_value: float | tuple[float, float] = 1.0,
     ):
 
         # Create a dummy image so that
         # we can create an `ImageDraw` object
-        dummy_image = Image.new("L", (0, 0), "white")
+        dummy_image = Image.new("L", (0, 0), 0)
 
         # Create an `ImageDraw` object
         image_draw = ImageDraw.Draw(dummy_image)
@@ -100,9 +100,10 @@ class ImageSynthesizer:
         bboxes_arr = np.array(bboxes)
         image_bbox = BBox(*bboxes_arr.min(axis=0)[:2], *bboxes_arr.max(axis=0)[2:])
 
-        # Randomly generate a grayscale value if the it is not provided
-        if grayscale_value is None:
-            grayscale_value = self._rng.uniform()
+        # Randomly generate a grayscale value if the it is a tuple of low and high values
+        if isinstance(grayscale_value, tuple):
+            low, high = grayscale_value
+            grayscale_value = self._rng.uniform(low, high)
 
         # Create the image to draw on
         image = Image.new(
