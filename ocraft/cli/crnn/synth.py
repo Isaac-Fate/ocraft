@@ -106,12 +106,12 @@ def synth(
     if output_dir is None:
         output_dir = Path.cwd().joinpath("synth-dataset")
 
-    # Create output directory
-    try:
-        output_dir.mkdir(parents=True, exist_ok=False)
-    except:
-        rich.print(f"[red]Output directory {output_dir} already exists. Exiting...")
-        exit(0)
+        # Create output directory
+        try:
+            output_dir.mkdir(parents=True, exist_ok=False)
+        except:
+            rich.print(f"[red]Output directory {output_dir} already exists. Exiting...")
+            exit(0)
 
     # Load all tokens
     with open(tokens_file_path, "r") as f:
