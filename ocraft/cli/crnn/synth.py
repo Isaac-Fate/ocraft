@@ -94,6 +94,13 @@ def synth(
             help="Upper bound of the grayscale value of the image to synthesize.",
         ),
     ] = None,
+    sum_chinese_token_probs: Annotated[
+        float,
+        typer.Option(
+            "--zh-prob",
+            help="Sum of probabilities associated with Chinese characters.",
+        ),
+    ] = 0.1,
     random_seed: Annotated[
         Optional[int],
         typer.Option(
@@ -123,9 +130,6 @@ def synth(
     # Number of other tokens
     num_other_tokens = len(tokens) - num_chinese_tokens
 
-    # Sum of probabilities associated with Chinese characters
-    sum_chinese_token_probs = 0.1
-
     # Sum of probabilities associated with symbols, digits and letters
     sum_other_token_probs = 1 - sum_chinese_token_probs
 
@@ -146,7 +150,7 @@ def synth(
     probs = np.concatenate((other_token_probs, chinese_token_probs)).tolist()
 
     # Random generator
-    rng = np.random.RandomState(random_seed)
+    rng = np.random.default_rng(random_seed)
 
     from ...crnn.data import SynthSampleMeta
 
@@ -154,7 +158,7 @@ def synth(
     for index in track(range(num_samples), description="Generating texts..."):
 
         # Random text length
-        text_len = rng.randint(min_text_len, max_text_len + 1)
+        text_len = rng.integers(min_text_len, max_text_len + 1)
 
         # Generate random text
         text = "".join(

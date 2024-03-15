@@ -34,7 +34,7 @@ class ImageSynthesizer:
             self._fonts.append(font)
 
         # Random generator
-        self._rng = np.random.RandomState(random_seed)
+        self._rng = np.random.default_rng(random_seed)
 
     @staticmethod
     def has_glyph(

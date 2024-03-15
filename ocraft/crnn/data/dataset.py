@@ -1,7 +1,6 @@
 from collections import namedtuple
 from pathlib import Path
 from PIL import Image
-import csv
 import torch
 from torch.utils.data import Dataset
 
@@ -57,21 +56,33 @@ class SynthDataset(Dataset):
 
         # Load annotations
         self._sample_metas: list[SynthSampleMeta] = []
+
+        # Read all rows
         with open(self._annotation_file_path, "r") as f:
 
-            # Create a CSV reader
-            reader = csv.reader(f)
+            # * Though this is a CSV file,
+            # * we do NOT read it using the csv package!
+            rows = f.read().splitlines()
 
-            # Skip header
-            next(reader)
+        # Skip header
+        rows = rows[1:]
 
-            for row in reader:
-                # The image file path is relative to the synth90k dataset directory
-                # We do not load the absolute path here to increase performance
-                sample_meta = SynthSampleMeta(*row)
+        for row in rows:
+            print(row.split(",", maxsplit=1))
 
-                # Add sample annotation
-                self._sample_metas.append(sample_meta)
+            # The image file path is relative to the synth90k dataset directory
+            # We do not load the absolute path here to increase performance
+            sample_meta = SynthSampleMeta(
+                *row.split(
+                    ",",
+                    # * Only split once!
+                    # *This is because the text may contain commas!
+                    maxsplit=1,
+                )
+            )
+
+            # Add sample annotation
+            self._sample_metas.append(sample_meta)
 
     def __len__(self) -> int:
 
