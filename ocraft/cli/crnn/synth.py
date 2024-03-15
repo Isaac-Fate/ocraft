@@ -102,6 +102,9 @@ def synth(
         ),
     ] = None,
 ):
+    # The output directory is set as the current directory if not specified
+    if output_dir is None:
+        output_dir = Path.cwd().joinpath("synth-dataset")
 
     # Create output directory
     try:
@@ -173,10 +176,6 @@ def synth(
         )
 
         sample_metas.append(sample_meta)
-
-    # The output directory is set as the current directory if not specified
-    if output_dir is None:
-        output_dir = Path.cwd().joinpath("synth-dataset")
 
     # Write annotation file
     with open(output_dir.joinpath("annotation.csv"), "w") as f:
