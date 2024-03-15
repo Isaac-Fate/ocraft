@@ -16,6 +16,14 @@ class TrainingConfig(BaseModel):
     # If this is None, the file path will be <run_dir>/tokens.txt
     tokens_file_path: Optional[Path] = None
 
+    # Path of the training sample annotation CSV
+    # If this is None, the file path will be <run_dir>/train-samples.csv
+    train_samples_file_path: Optional[Path] = None
+
+    # Path of the validation sample annotation CSV
+    # If this is None, the file path will be <run_dir>/valid-samples.csv
+    valid_samples_file_path: Optional[Path] = None
+
     # Batch sizes
     train_batch_size: int
     valid_batch_size: int
@@ -61,28 +69,6 @@ class TrainingConfig(BaseModel):
         return self.run_dir.joinpath("train").with_suffix(".log")
 
     @property
-    def train_samples_file_path(self) -> Path:
-        """Path of the training sample annotation CSV."""
-
-        file_path = self.run_dir.joinpath("train-samples.csv")
-
-        # Ensure that the file exists
-        assert file_path.is_file(), f"File {file_path} does not exist"
-
-        return file_path
-
-    @property
-    def valid_samples_file_path(self) -> Path:
-        """Path of the validation sample annotation CSV."""
-
-        file_path = self.run_dir.joinpath("valid-samples.csv")
-
-        # Ensure that the file exists
-        assert file_path.is_file(), f"File {file_path} does not exist"
-
-        return file_path
-
-    @property
     def checkpoints_dir(self) -> Path:
         """Directory storing all checkpoints."""
 
@@ -102,3 +88,23 @@ class TrainingConfig(BaseModel):
         # Infer the path of the tokens file
         if self.tokens_file_path is None:
             self.tokens_file_path = self.run_dir.joinpath("tokens.txt")
+
+        # Infer the path of the training sample annotation CSV
+        if self.train_samples_file_path is None:
+
+            file_path = self.run_dir.joinpath("train-samples.csv")
+
+            # Ensure that the file exists
+            assert file_path.is_file(), f"File {file_path} does not exist"
+
+            self.train_samples_file_path = self.run_dir.joinpath("train-samples.csv")
+
+        # Infer the path of the validation sample annotation CSV
+        if self.valid_samples_file_path is None:
+
+            file_path = self.run_dir.joinpath("valid-samples.csv")
+
+            # Ensure that the file exists
+            assert file_path.is_file(), f"File {file_path} does not exist"
+
+            self.valid_samples_file_path = self.run_dir.joinpath("valid-samples.csv")
