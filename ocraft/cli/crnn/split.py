@@ -90,9 +90,19 @@ def split(
     header = SynthSampleMeta._fields
 
     with open(run_dir.joinpath("train-samples.csv"), "w") as f:
+        # Write header
         f.write(",".join(header) + "\n")
-        f.writelines([rows[i] for i in train_sample_indices])
+
+        # Write rows
+        for i in train_sample_indices:
+            row = rows[i]
+            f.write(f"{row}\n")
 
     with open(run_dir.joinpath("valid-samples.csv"), "w") as f:
+        # Write header
         f.write(",".join(header) + "\n")
-        f.writelines([rows[i] for i in valid_sample_indices])
+
+        # Write rows
+        for i in valid_sample_indices:
+            row = rows[i]
+            f.write(f"{row}\n")
