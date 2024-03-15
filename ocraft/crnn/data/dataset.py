@@ -68,7 +68,6 @@ class SynthDataset(Dataset):
         rows = rows[1:]
 
         for row in rows:
-            print(row.split(",", maxsplit=1))
 
             # The image file path is relative to the synth90k dataset directory
             # We do not load the absolute path here to increase performance
